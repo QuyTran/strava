@@ -131,6 +131,5 @@ dmypy.json
 
 access_token.json
 config.py
-requirements.txt
 credentials.json
 google.json
