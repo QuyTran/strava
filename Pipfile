@@ -17,7 +17,7 @@ oauth2client = "*"
 stravalib = "*"
 jsonpickle = "*"
 pip = "*"
-sentry-sdk = "*"
+sentry-sdk = {version = "==0.15.1", extras = ["flask"]}
 
 [dev-packages]
 

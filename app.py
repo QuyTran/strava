@@ -4,8 +4,19 @@ import click
 import googlemodel
 import stravamodel
 
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
+sentry_sdk.init(
+    dsn=app.config["SENTRY_DSN"],
+    integrations=[FlaskIntegration()]
+)
+
+@app.route('/debug-sentry')
+def trigger_error():
+    division_by_zero = 1 / 0
 
 # define routes
 @app.route("/")
@@ -23,10 +34,10 @@ def main():
 def authorization():
     code = request.args.get('code')
     strava_instance = stravamodel.StravaModel(app.config["MY_STRAVA_CLUB_ID"],
-                                  app.config["MY_STRAVA_CLIENT_ID"],
-                                  app.config["MY_STRAVA_CLIENT_SECRET"],
-                                  app.config["HOST_URL"]
-                                  )
+                                              app.config["MY_STRAVA_CLIENT_ID"],
+                                              app.config["MY_STRAVA_CLIENT_SECRET"],
+                                              app.config["HOST_URL"]
+                                              )
 
     access_token = strava_instance.save_access_token(code)
     return render_template('authorization.html', access_token=access_token)
@@ -38,16 +49,16 @@ def pull():
     click.echo('Update activities')
     try:
         strava_instance = stravamodel.StravaModel(app.config["MY_STRAVA_CLUB_ID"],
-                                      app.config["MY_STRAVA_CLIENT_ID"],
-                                      app.config["MY_STRAVA_CLIENT_SECRET"],
-                                      app.config["HOST_URL"]
-                                      )
+                                                  app.config["MY_STRAVA_CLIENT_ID"],
+                                                  app.config["MY_STRAVA_CLIENT_SECRET"],
+                                                  app.config["HOST_URL"]
+                                                  )
         data = strava_instance.get_club_activities(app.config["START_EVENT_ID"])
         google_instance = googlemodel.GoogleModel(app.config["GOOGLE_PRIVATE_KEY"],
-                                      app.config["GOOGLE_SPREADSHEET_ID"],
-                                      app.config["GOOGLE_CELL_RANGE"],
-                                      app.config["GOOGLE_CLIENT_EMAIL"]
-                                      )
+                                                  app.config["GOOGLE_SPREADSHEET_ID"],
+                                                  app.config["GOOGLE_CELL_RANGE"],
+                                                  app.config["GOOGLE_CLIENT_EMAIL"]
+                                                  )
         google_instance.write_to_google_sheet(data)
     except Exception as e:
         app.logger.info("Oops!", e.__class__, "occurred.")
