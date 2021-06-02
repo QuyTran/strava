@@ -27,6 +27,7 @@ def authorization():
                                   app.config["MY_STRAVA_CLIENT_SECRET"],
                                   app.config["HOST_URL"]
                                   )
+
     access_token = strava_instance.save_access_token(code)
     return render_template('authorization.html', access_token=access_token)
 

@@ -16,6 +16,8 @@ google-auth = "*"
 oauth2client = "*"
 stravalib = "*"
 jsonpickle = "*"
+pip = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 

@@ -1,5 +1,7 @@
 import json
 import hashlib
+import time
+
 from stravalib import Client
 
 
@@ -12,7 +14,8 @@ class StravaModel:
 
     def get_club_activities(self, start_event_id) -> list:
         access_token = self.get_strava_access_token()
-        client = Client(access_token=access_token)
+        access_token = self.refresh_access_token(access_token)
+        client = Client(access_token=access_token['access_token'])
         data = []
         for athlete in client.get_club_activities(self.my_strava_club_id):
             formatted_row = self.to_array(athlete)
@@ -21,12 +24,22 @@ class StravaModel:
             data.append(formatted_row)
         return data
 
-    def get_strava_access_token(self) -> str:
+    def refresh_access_token(self, access_token) -> list:
+        if access_token['expires_at'] < time.time():
+            client = Client(access_token=access_token['access_token'])
+            new_access_token = client.refresh_access_token(self.client_id,
+                                                           self.client_secret,
+                                                           access_token['refresh_token'])
+            self.write_access_token_to_file(new_access_token)
+            return new_access_token
+
+        return access_token
+
+    def get_strava_access_token(self) -> list:
         f = open('access_token.json', )
         data = json.load(f)
-        access_token = data['access_token']
         f.close()
-        return access_token
+        return data
 
     def to_array(self, activity_obj) -> list:
         obj = []
@@ -59,7 +72,9 @@ class StravaModel:
         access_token = client.exchange_code_for_token(client_id=self.client_id,
                                                       client_secret=self.client_secret,
                                                       code=code)
+        self.write_access_token_to_file(access_token)
+        return access_token
+
+    def write_access_token_to_file(self, access_token):
         with open('access_token.json', 'w') as f:
             f.write(json.dumps(access_token))
-
-        return access_token
