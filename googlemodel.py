@@ -48,5 +48,6 @@ class GoogleModel:
     def reformat_data(self, values) -> dict:
         data = {}
         for item in values:
+            item[4] = float(item[4])
             data[item[-1]] = item
         return data
