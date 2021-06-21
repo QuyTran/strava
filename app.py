@@ -59,7 +59,8 @@ def pull():
                                                   app.config["GOOGLE_CELL_RANGE"],
                                                   app.config["GOOGLE_CLIENT_EMAIL"]
                                                   )
-        google_instance.write_to_google_sheet(data)
+        old_data = google_instance.read_from_google_sheet()
+        google_instance.write_to_google_sheet({**data, **old_data})
     except Exception as e:
         app.logger.info("Oops!", e.__class__, "occurred.")
     click.echo('End pulling activities')

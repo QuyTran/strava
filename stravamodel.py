@@ -12,16 +12,17 @@ class StravaModel:
         self.client_secret = client_secret
         self.host = host
 
-    def get_club_activities(self, start_event_id) -> list:
+    def get_club_activities(self, start_event_id) -> dict:
         access_token = self.get_strava_access_token()
         access_token = self.refresh_access_token(access_token)
         client = Client(access_token=access_token['access_token'])
-        data = []
+        data = {}
         for athlete in client.get_club_activities(self.my_strava_club_id):
             formatted_row = self.to_array(athlete)
             if start_event_id == formatted_row[-1]:
+                print('found!')
                 break
-            data.append(formatted_row)
+            data[formatted_row[-1]] = formatted_row
         return data
 
     def refresh_access_token(self, access_token) -> list:

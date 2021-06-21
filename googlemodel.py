@@ -37,3 +37,16 @@ class GoogleModel:
             range=self.range_name,
             valueInputOption=value_input_option,
             body=body).execute()
+
+    def read_from_google_sheet(self) -> dict:
+        service = self.get_google_service()
+        result = service.spreadsheets().values().get(spreadsheetId=self.spreadsheet_id,
+                                                     range=self.range_name, ).execute()
+        values = result.get('values', [])
+        return self.reformat_data(values)
+
+    def reformat_data(self, values) -> dict:
+        data = {}
+        for item in values:
+            data[item[-1]] = item
+        return data
