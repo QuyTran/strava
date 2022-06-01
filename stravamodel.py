@@ -54,13 +54,13 @@ class StravaModel:
         obj.append(str(activity_obj.elapsed_time))
         obj.append(str(activity_obj.total_elevation_gain).removesuffix('m'))
         obj.append(activity_obj.athlete.firstname + ' ' + activity_obj.athlete.lastname)
+        obj.append(now.strftime("%Y/%m/%d"))
         event_id = hashlib.md5(json.dumps(obj, sort_keys=True).encode('utf-8')).hexdigest()
         obj.append(event_id)
         user_id = hashlib.md5(
             json.dumps([activity_obj.athlete.firstname, activity_obj.athlete.lastname], sort_keys=False).encode(
                 'utf-8')).hexdigest()
         obj.insert(0, user_id)
-        obj.insert(now.strftime("%Y/%m/%d"))
         return obj
 
     def get_auth_url(self) -> str:
