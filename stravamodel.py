@@ -1,6 +1,7 @@
 import json
 import hashlib
 import time
+from datetime import date
 
 from stravalib import Client
 
@@ -43,6 +44,7 @@ class StravaModel:
         return data
 
     def to_array(self, activity_obj) -> list:
+        now = date.today()
         obj = []
         obj.append(activity_obj.name)
         obj.append(str(activity_obj.start_date))
@@ -58,6 +60,7 @@ class StravaModel:
             json.dumps([activity_obj.athlete.firstname, activity_obj.athlete.lastname], sort_keys=False).encode(
                 'utf-8')).hexdigest()
         obj.insert(0, user_id)
+        obj.insert(now.strftime("%Y/%m/%d"))
         return obj
 
     def get_auth_url(self) -> str:
