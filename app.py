@@ -54,6 +54,8 @@ def pull():
                                                   app.config["HOST_URL"]
                                                   )
         data = strava_instance.get_club_activities(app.config["START_EVENT_ID"])
+        
+        
         google_instance = googlemodel.GoogleModel(app.config["GOOGLE_PRIVATE_KEY"],
                                                   app.config["GOOGLE_SPREADSHEET_ID"],
                                                   app.config["GOOGLE_CELL_RANGE"],
@@ -64,6 +66,7 @@ def pull():
         google_instance.write_to_google_sheet(list(merged_data.values()))
     except Exception as e:
         app.logger.info("Oops!", e.__class__, "occurred.")
+        # print(e)
     click.echo('End pulling activities')
 
 

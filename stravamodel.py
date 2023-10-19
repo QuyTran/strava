@@ -4,6 +4,7 @@ import time
 from datetime import date
 
 from stravalib import Client
+suffix = "meter"
 
 
 class StravaModel:
@@ -49,10 +50,10 @@ class StravaModel:
         obj.append(activity_obj.name)
         obj.append(str(activity_obj.start_date))
         obj.append(str(activity_obj.type))
-        obj.append(float(str(activity_obj.distance).removesuffix(' m')))
+        obj.append(float(str(activity_obj.distance).removesuffix(suffix)))
         obj.append(str(activity_obj.moving_time))
         obj.append(str(activity_obj.elapsed_time))
-        obj.append(str(activity_obj.total_elevation_gain).removesuffix('m'))
+        obj.append(str(activity_obj.total_elevation_gain).removesuffix(suffix))
         obj.append(activity_obj.athlete.firstname + ' ' + activity_obj.athlete.lastname)
         obj.append(now.strftime("%Y/%m/%d"))
         event_id = hashlib.md5(json.dumps(obj, sort_keys=True).encode('utf-8')).hexdigest()
