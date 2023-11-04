@@ -55,8 +55,8 @@ class StravaModel:
         obj.append(str(activity_obj.elapsed_time))
         obj.append(str(activity_obj.total_elevation_gain).removesuffix(suffix))
         obj.append(activity_obj.athlete.firstname + ' ' + activity_obj.athlete.lastname)
-        obj.append(now.strftime("%Y/%m/%d"))
         event_id = hashlib.md5(json.dumps(obj, sort_keys=True).encode('utf-8')).hexdigest()
+        obj.append(now.strftime("%Y/%m/%d"))
         obj.append(event_id)
         user_id = hashlib.md5(
             json.dumps([activity_obj.athlete.firstname, activity_obj.athlete.lastname], sort_keys=False).encode(
